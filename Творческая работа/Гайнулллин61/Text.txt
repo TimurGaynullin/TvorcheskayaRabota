@@ -1,0 +1,205 @@
+// Rotation amounts
+static GLfloat xRot = 0.0f;
+static GLfloat yRot = 0.0f;
+
+
+// Change viewing volume and viewport.  Called when window is resized
+void ChangeSize(GLsizei w, GLsizei h)
+{
+    GLfloat fAspect;
+
+    // Prevent a divide by zero
+    if (h == 0)
+        h = 1;
+
+    // Set Viewport to window dimensions
+    glViewport(0, 0, w, h);
+
+    fAspect = (GLfloat)w / (GLfloat)h;
+
+    // Reset coordinate system
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+
+    // Produce the perspective projection
+    gluPerspective(60.0f, fAspect, 1.0, 1000.0);
+    gluLookAt(200.0, 200.0, 200.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+
+// This function does any needed initialization on the rendering
+// context.  Here it sets up and initializes the lighting for
+// the scene.
+void SetupRC()
+{
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glEnable(GL_DEPTH_TEST);    // Hidden surface removal
+//glFrontFace(GL_CCW);        // Counter clock-wise polygons face out
+    glFrontFace(GL_CW);
+    glEnable(GL_CULL_FACE);     // Do not calculate inside of jet
+
+}
+
+// Respond to arrow keys
+void SpecialKeys(int key, int x, int y)
+{
+    if (key == GLUT_KEY_UP)
+        xRot -= 5.0f;
+
+    if (key == GLUT_KEY_DOWN)
+        xRot += 5.0f;
+
+    if (key == GLUT_KEY_LEFT)
+        yRot -= 5.0f;
+
+    if (key == GLUT_KEY_RIGHT)
+        yRot += 5.0f;
+
+    xRot = (GLfloat)((const int)xRot % 360);
+    yRot = (GLfloat)((const int)yRot % 360);
+
+    // Refresh the Window
+    glutPostRedisplay();
+}
+
+
+// Called to draw scene
+void RenderScene(void)
+{
+    float fZ, bZ;
+
+    // Clear the window with current clearing color
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    fZ = 100.0f;
+    bZ = -100.0f;
+
+    // Save the matrix state and do the rotations
+    glPushMatrix();
+    glRotatef(xRot, 1.0f, 0.0f, 0.0f);
+    glRotatef(yRot, 0.0f, 1.0f, 0.0f);
+    glScalef(5.0f, 5.0f, 5.0f);
+
+    //----------------------
+    glLineWidth(4);
+    glBegin(GL_LINES);
+    glColor3f(1.0, 0.0, 0.0);
+    glVertex3f(0, 0, 0);
+    glVertex3f(25, 0, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glColor3f(0.0, 1.0, 0.0);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 25, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 0, 25);
+    glEnd();
+    //----------------------
+
+    glBegin(GL_POLYGON);
+    glColor3f(1.0, 5.0, 0.0);
+    glVertex3f(0, 0, 0);
+    glVertex3f(20, 0, 0);
+    glVertex3f(20, 10, 0);
+    glVertex3f(0, 10, 0);
+    glEnd();
+
+    //перед
+
+    glBegin(GL_POLYGON);
+    glColor3f(1.0, 0.5, 0.0);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 10, 0);
+    glVertex3f(0, 10, 10);
+    glVertex3f(0, 0, 10);
+    glEnd();
+
+
+    glBegin(GL_POLYGON);
+    glColor3f(1.0, 0.2, 0.0);
+    glVertex3f(20, 0, 0);
+    glVertex3f(20, 0, 10);
+    glVertex3f(20, 10, 10);
+    glVertex3f(20, 10, 0);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glColor3f(6.0, 0.5, 0.3);
+    glVertex3f(20, 0, 0);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 0, 10);
+    glVertex3f(20, 0, 10);
+    glEnd();
+
+
+    //-----------------
+    glBegin(GL_POLYGON);
+    glColor3f(0.2, 0.2, 0.0);
+    glVertex3f(20, 10, 0);
+    glVertex3f(20, 10, 10);
+    glVertex3f(0, 10, 10);
+    glVertex3f(0, 10, 0);
+    glEnd();
+
+
+    glBegin(GL_POLYGON);
+    glColor3f(0.2, 0.4, 0.2);
+    glVertex3f(0, 10, 10);
+    glVertex3f(20, 10, 10);
+    glVertex3f(20, 5, 15);
+    glVertex3f(0, 5, 15);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glColor3f(0.2, 0.5, 0.6);
+    glVertex3f(0, 5, 15);
+    glVertex3f(20, 5, 15);
+    glVertex3f(20, 0, 10);
+    glVertex3f(0, 0, 10);
+    glEnd();
+
+
+    glBegin(GL_TRIANGLES);
+    glColor3f(1.0, 0.5, 0.6);
+    glVertex3f(20, 10, 10);
+    glVertex3f(20, 0, 10);
+    glVertex3f(20, 5, 15);
+    glEnd();
+
+
+    glBegin(GL_TRIANGLES);
+    glColor3f(1.0, 0.5, 0.6);
+    glVertex3f(0, 0, 10);
+    glVertex3f(0, 10, 10);
+    glVertex3f(0, 5, 15);
+    glEnd();
+
+    //--------------------
+    // Restore the matrix state
+    glPopMatrix();
+
+    // Buffer swap
+    glutSwapBuffers();
+}
+int main(int argc, char* argv[])
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(800, 600);
+    glutCreateWindow("Perspective Projection");
+    glutReshapeFunc(ChangeSize);
+    glutSpecialFunc(SpecialKeys);
+    glutDisplayFunc(RenderScene);
+    SetupRC();
+    glutMainLoop();
+
+    return 0;
+}
